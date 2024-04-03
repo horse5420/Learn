@@ -1,0 +1,62 @@
+void GenerateReport(void)
+
+      { FILE *fpd,*fpr;
+       int i=0,n=0,e=0;
+       float total=0,exc=500.00,high=0.00,low=99999.99;
+       donor ptd;
+       if((fpd = fopen(FNAMED,"rt"))==NULL)
+       {
+         printf("Cannot open file %s for reading...",FNAMED);
+         printf("\nQuitting now...");
+         return;
+       }
+
+       if((fpr = fopen(FNAMER,"wt"))==NULL)
+       {
+         printf("Cannot open file %s for reading...",FNAMER);
+         printf("\nQuitting now...");
+         return;
+       }
+
+       fprintf(fpr,"---REPORT---");
+       fprintf(fpr,"\n %-31s %13s %10s ","DNAME","DONATEAMT(RM)"),"DONATEDATE";
+       for(n=0;n<=3;++n)
+       { fscanf(fpd ,"%f %s %[^\n]",&ptd.damt,ptd.ddate,ptd.dname);
+         while(!feof(fpd))
+         {
+            if(n==0)
+            {
+               fprintf(fpr,"\n %-31s %13.2f %10s",ptd.dname,ptd.damt,ptd.ddate);
+               ++i;
+               total+=ptd.damt;
+               if(ptd.damt>exc)++e;
+               if(high<ptd.damt)high=ptd.damt;
+               if(low>ptd.damt)low=ptd.damt;
+            }
+            else if(n==1)
+            {
+               fprintf(fpr,"\n%d donation amounts(s)",i);
+               fprintf(fpr,"\nGrand total = RM%.2f",total);
+               fprintf(fpr,"\n%d donation amount exceeding RM%.2f",e,exc);
+            }
+            else if(n==2)
+            {  fprintf(fpr,"\n\nLargest donation amount=RM%.2f",high);
+               if(ptd.damt==high)
+                  fprintf(fpr,"\n%-31s",ptd.dname);
+            }
+            else if(n==3)
+            {
+               fprintf(fpr,"\nSmallest donation amount=RM%.2f",low);
+               if(ptd.damt==low)
+                  fprintf(fpr,"\n%-31s",ptd.dname);
+            }
+            fscanf(fpd ,"%f %s %[^\n]",&ptd.damt,ptd.ddate,ptd.dname);
+            }
+        }
+
+         fclose(fpd);
+         fclose(fpr);
+
+      printf("\nPlease open %s to view donation results",FNAMER);
+       return;
+   }
